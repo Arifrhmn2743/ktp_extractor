@@ -173,4 +173,35 @@ extension StringExtension on String {
     }
     return closestWord;
   }
+
+  String normalizeText(
+    String text, {
+    required String keyword,
+    List<String> replacements = const [],
+    Map<String, String> corrections = const {},
+  }) {
+    String result = text.toUpperCase();
+
+    // Hilangkan keyword dan karakter umum
+    result = result
+        .replaceAll(keyword.toUpperCase(), '')
+        .replaceAll(':', '')
+        .replaceAll('=', '')
+        .replaceAll('  ', ' ')
+        .trim();
+
+    // Bersihkan typo yang umum
+    for (var rep in replacements) {
+      result = result.replaceAll(rep.toUpperCase(), '');
+    }
+
+    result = result.trim();
+
+    // Koreksi ke bentuk standar jika match dengan typo yang sudah dikenali
+    if (corrections.containsKey(result)) {
+      return corrections[result]!;
+    }
+
+    return result;
+  }
 }
